@@ -6,7 +6,7 @@ ini_error ini_open(ini* io, const char* buffer, size_t size) {
     return SUCCESS;
 }
 
-ini_error ini_get(ini* io, const char* section, const char* key, char** out_val) {
+ini_error ini_get(ini* io, const char* section, const char* key, char* out_val) {
     (void)section;
     for (io->current = io->start; io->current < io->end; io->current++) {
         // Ignore whitespace and tabs
@@ -36,11 +36,11 @@ ini_error ini_get(ini* io, const char* section, const char* key, char** out_val)
                         io->current++;
                     }
                     while (*(io->current) != '\n') {
-                        **out_val = *(io->current);
-                        (*out_val)++;
+                        *out_val = *(io->current);
+                        out_val++;
                         io->current++;
                     }
-                    **out_val = '\0';
+                    *out_val = '\0';
                 }
                 return SUCCESS;
             }
