@@ -1,6 +1,6 @@
-CC = clang
+CC = gcc 
 CFLAGS = -Wall -Wextra -Werror -std=c11
-OUT = strtest
+OUT = initest
 CFILES = $(shell find . -type f -name '*.c')
 COBJS = $(CFILES:.c=.o)
 
