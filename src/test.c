@@ -14,10 +14,9 @@ int main() {
     fclose(fp);
 
     ini_open(&i, ini_buffer, ini_size);
-    char* value = malloc(255);
-    ini_get(&i, "test_section", "test", value);
+    const char* value = NULL;
+    ini_get(&i, "another_section", "key", &value);
     printf("%s\n", value);
 
     free(ini_buffer);
-    free(value);
 }
