@@ -9,6 +9,7 @@ typedef enum {
     SUCCESS,
     ERRNO,
     END,
+    MISSING_KEY,
     MISSING_VALUE,
     NOT_FOUND
 } ini_error;

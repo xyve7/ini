@@ -1,5 +1,8 @@
 #include "ini.h"
 #include <string.h>
+
+static const char* last_section = NULL;
+
 ini_error _ini_delim(ini* io) {
     for (; io->current < io->end; io->current++) {
         switch (*(io->current)) {
@@ -17,6 +20,12 @@ ini_error _ini_delim(ini* io) {
         //             ^
         // Continues until newline, NOT replacing spacing with null-termination
         case '=':
+            *(io->current) = '\0';
+            io->current++;
+            while (io->current < io->end && (*(io->current) == ' ' || *(io->current) == '\t')) {
+                *(io->current) = '\0';
+                io->current++;
+            }
             while (io->current < io->end && *(io->current) != '\n') {
                 io->current++;
             }
@@ -60,9 +69,24 @@ ini_error _ini_next(ini* io, const char** out_section, const char** out_key, con
     while (_ini_next_token(io, &check_token) == SUCCESS) {
         if (*check_token == '[') {
             *out_section = check_token + 1;
-            _ini_next_token(io, check_token);
+            io->current += strlen(check_token);
+            _ini_next_token(io, &check_token);
+        } else {
+            *out_section = NULL;
         }
-        if ((*check_token >= 'a' && *check_token <= 'z') && (*check_token >= 'A' && *check_token <= 'Z')) {
+        if ((*check_token >= 'a' && *check_token <= 'z') || (*check_token >= 'A' && *check_token <= 'Z')) {
+            *out_key = check_token;
+            io->current += strlen(check_token);
+            _ini_next_token(io, &check_token);
+        } else {
+            return MISSING_KEY;
+        }
+        if ((*check_token >= 'a' && *check_token <= 'z') || (*check_token >= 'A' && *check_token <= 'Z')) {
+            *out_val = check_token;
+            io->current += strlen(check_token);
+            return SUCCESS;
+        } else {
+            return MISSING_VALUE;
         }
     }
     return END;
@@ -73,6 +97,11 @@ ini_error ini_get(ini* io, const char* section, const char* key, const char** ou
     const char* check_val = NULL;
     io->current = io->start;
     while (_ini_next(io, &check_section, &check_key, &check_val) != END) {
+        if (check_section == NULL) {
+            check_section = last_section;
+        } else {
+            last_section = check_section;
+        }
         if (strcmp(check_section, section) == 0 && strcmp(check_key, key) == 0) {
             *out_val = check_val;
             return SUCCESS;

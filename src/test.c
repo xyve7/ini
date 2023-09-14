@@ -15,7 +15,7 @@ int main() {
 
     ini_open(&i, ini_buffer, ini_size);
     const char* value = NULL;
-    ini_get(&i, "another_section", "key", &value);
+    ini_get(&i, "testing", "key", &value);
     printf("%s\n", value);
 
     free(ini_buffer);
