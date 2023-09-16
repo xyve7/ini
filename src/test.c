@@ -15,7 +15,11 @@ int main() {
 
     ini_open(&i, ini_buffer, ini_size);
     const char* value = NULL;
-    ini_get(&i, "testing", "key", &value);
+    ini_get(&i, "window", "width", &value);
+    printf("%s\n", value);
+    ini_get(&i, "colors", "background", &value);
+    printf("%s\n", value);
+    ini_get(&i, "window", "height", &value);
     printf("%s\n", value);
 
     free(ini_buffer);
