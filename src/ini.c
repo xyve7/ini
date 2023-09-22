@@ -74,14 +74,14 @@ ini_error _ini_next(ini* io, const char** out_section, const char** out_key, con
         } else {
             *out_section = NULL;
         }
-        if ((*check_token >= 'a' && *check_token <= 'z') || (*check_token >= 'A' && *check_token <= 'Z')) {
+        if (isalpha(*check_token)) {
             *out_key = check_token;
             io->current += strlen(check_token);
             _ini_next_token(io, &check_token);
         } else {
             return MISSING_KEY;
         }
-        if ((*check_token >= 'a' && *check_token <= 'z') || (*check_token >= 'A' && *check_token <= 'Z')) {
+        if (isalnum(*check_token)) {
             *out_val = check_token;
             io->current += strlen(check_token);
             return SUCCESS;
